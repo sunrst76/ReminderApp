@@ -146,20 +146,20 @@ MainWindow::MainWindow(QWidget *parent)
 
 
 // --- БЛОК НАСТРОЙКИ АВТОЗАПУСКА ДЛЯ WINDOWS ---
-#ifdef Q_OS_WIN
+//#ifdef Q_OS_WIN
     // Путь к ветке автозапуска в реестре текущего пользователя
-    QSettings settings("HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Run", QSettings::NativeFormat);
+//    QSettings settings("HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Run", QSettings::NativeFormat);
 
     // Имя параметра в реестре (название вашей программы)
-    QString appName = QCoreApplication::applicationName();
-    if(appName.isEmpty()) appName = "ReminderApp";
+//    QString appName = QCoreApplication::applicationName();
+//    if(appName.isEmpty()) appName = "ReminderApp";
 
     // Получаем полный путь к текущему запущенному .exe файлу
-    QString appPath = QDir::toNativeSeparators(QCoreApplication::applicationFilePath());
+//    QString appPath = QDir::toNativeSeparators(QCoreApplication::applicationFilePath());
 
     // Записываем путь в реестр Windows
-    settings.setValue(appName, "\"" + appPath + "\"");
-#endif
+//    settings.setValue(appName, "\"" + appPath + "\"");
+//#endif
     // ----------------------------------------------
 
     // Настройка БД и загрузка старых напоминаний

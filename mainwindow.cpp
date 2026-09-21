@@ -697,8 +697,8 @@ void MainWindow::applyDarkTheme() {
 
         // Стили выпадающих списков (ComboBox)
         "QComboBox { padding-right: 20px; }"
-        "QComboBox::drop-down { subcontrol-origin: padding; subcontrol-position: top right; width: 20px; border: none; background-color: #4e5254; border-top-right-radius: 4px; border-bottom-right-radius: 4px; }"
-        "QComboBox::arrow { image: none; border-left: 4px solid transparent; border-right: 4px solid transparent; border-top: 5px solid #ffffff; }"
+        //"QComboBox::drop-down { subcontrol-origin: padding; subcontrol-position: top right; width: 20px; border: none; background-color: #4e5254; border-top-right-radius: 4px; border-bottom-right-radius: 4px; }"
+        //"QComboBox::arrow { image: none; border-left: 4px solid transparent; border-right: 4px solid transparent; border-top: 5px solid #ffffff; }"
 
         // --- РАБОЧИЙ БЛОК: УБИРАЕМ CSS-КОНФЛИКТЫ ДЛЯ СТРЕЛОЧЕК QSpinBox ---
         // Мы удалили ручную прорисовку up-button и down-arrow.

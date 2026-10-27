@@ -35,3 +35,9 @@ target_link_libraries(ReminderApp PRIVATE
     Qt${QT_VERSION_MAJOR}::Sql
     Qt${QT_VERSION_MAJOR}::Network
 )
+# Автоматическое копирование config.ini в папку со скомпилированным .exe файлом
+configure_file(
+    ${CMAKE_CURRENT_SOURCE_DIR}/config.ini
+    ${CMAKE_CURRENT_BINARY_DIR}/config.ini
+    COPYONLY
+)

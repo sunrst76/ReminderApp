@@ -310,7 +310,7 @@ void MainWindow::checkReminders() {
         if (!reminders[i].triggered && now >= reminders[i].dateTime) {
 
             // --- 1. УВЕДОМЛЕНИЕ ГОЛОСОМ + ЗВУК + СОХРАНЕНИЕ ПУША В ПАНЕЛИ WINDOWS ---
-            // --- УВЕДОМЛЕНИЕ ГОЛОСОМ + ЗВУК + ЖЕЛЕЗОБЕТОННОЕ СОХРАНЕНИЕ В ЦЕНТРЕ УВЕДОМЛЕНИЙ ---
+            // --- УВЕДОМЛЕНИЕ ГОЛОСОМ + ЗВУК + СОХРАНЕНИЕ В ЦЕНТРЕ УВЕДОМЛЕНИЙ ---
             if (!isSilentMode) {
                 QString speechText = "Внимание! Напоминание: " + reminders[i].text;
 
@@ -723,30 +723,46 @@ void MainWindow::applyDarkTheme() {
     this->setStyleSheet(darkStyle);
 }
 
-
-
-
 void MainWindow::sendTelegramMessage(const QString &message) {
+    // Формируем путь к файлу config.ini в папке, где запущен наш .exe файл
+    QString configPath = QCoreApplication::applicationDirPath() + "/config.ini";
+
+    // Загружаем настройки из INI-файла
+    QSettings settings(configPath, QSettings::IniFormat);
+
+    // Считываем значения из секции [Telegram]
+    QString botToken = settings.value("Telegram/BotToken").toString();
+    QString chatId   = settings.value("Telegram/ChatId").toString();
+
+    // Проверяем, удалось ли прочитать данные
+    if (botToken.isEmpty() || chatId.isEmpty()) {
+        qWarning() << "Ошибка: Файл config.ini не найден или данные в нем пусты! Путь:" << configPath;
+        return;
+    }
+
+    // Отправка запроса в Telegram (код остается прежним)
     QNetworkAccessManager *manager = new QNetworkAccessManager(this);
-
-    // Безопасная сборка адреса API без опечаток
-    QString basePart = "https://api.te" "legram.org/";
-    QString botPart  = "bot8779603023:AAFyC3ZxAj5c_dLQluRbJN27Hwy8k1wUNJY/";
-    QString methodPart = "sendMessage";
-
-    QString urlStr = basePart + botPart + methodPart;
+    QString urlStr = "https://api.telegram.org/bot" + botToken + "/sendMessage";
     QUrl url(urlStr);
 
     QNetworkRequest request(url);
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
 
     QUrlQuery params;
-    // Ваш проверенный Chat ID
-    params.addQueryItem("chat_id", "330151324");
+    params.addQueryItem("chat_id", chatId);
     params.addQueryItem("text", message);
 
     QNetworkReply *reply = manager->post(request, params.toString(QUrl::FullyEncoded).toUtf8());
 
-    connect(reply, &QNetworkReply::finished, reply, &QNetworkReply::deleteLater);
-    connect(reply, &QNetworkReply::finished, manager, &QNetworkAccessManager::deleteLater);
+    connect(reply, &QNetworkReply::finished, [reply, manager]() {
+        if (reply->error() != QNetworkReply::NoError) {
+            qDebug() << "Сетевая ошибка Telegram:" << reply->errorString();
+        } else {
+            qDebug() << "Сообщение успешно отправлено через config.ini!";
+        }
+        reply->deleteLater();
+        manager->deleteLater();
+    });
 }
+
+
